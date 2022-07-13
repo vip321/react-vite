@@ -1,0 +1,67 @@
+.day-content {
+  position: relative;
+  z-index: 1;
+  width: 800px;
+  height: 1104px;
+  padding: 30px;
+  .day-hour-bar {
+    z-index: 2;
+    width: 100%;
+    position: absolute;
+    padding-bottom: calc(150px + constant(safe-area-inset-bottom));
+    padding-bottom: calc(150px + env(safe-area-inset-bottom));
+    background: #fff;
+  }
+
+  .day-hour-bar-item {
+    height: 46px;
+    display: flex;
+    flex-direction: row;
+    background-color: #fff;
+    text-align: center;
+  }
+
+  .item {
+    display: inline-block;
+    width: 70px;
+    margin-left: 30px;
+    margin-top: -20px;
+    font-size: 24px;
+    color: #999;
+  }
+
+  .day-hour-context-item-div {
+    background-color: #e5e5e5;
+    width: 100%;
+    margin-left: 30px;
+    height: 1px;
+    margin-right: 20px;
+  }
+
+  .day-content-item {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    margin-left: 110px;
+    width: calc(100% - 110px);
+  }
+
+  .day-content-item-sub {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .day-content-show {
+    background: #ecf2fd;
+    border: 1px solid red;
+    opacity: 0.5;
+    border-left: 6px solid #4786f4;
+    border-radius: 8px;
+    margin-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: auto;
+    padding: 5px 20px;
+  }
+}

@@ -1,0 +1,135 @@
+   /**
+         * 计算控件开始的位置
+         *
+         * @param models 数据集合
+         * @return 控件信息集合
+         */
+        private List<ViewInfo> caculateViewPosisitions(List<TodoModel> models) {
+            final List<ViewInfo> tmpViewInfos = new ArrayList<>();
+
+            if (null != models) {
+                Calendar calendar = Calendar.getInstance();
+                try {
+                    calendar.setTime(DateTimeUtil.ymdhmFormat.parse(new StringBuilder().append(selectedDate).append(" 00:00:00").toString()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                int currentYear = calendar.get(Calendar.YEAR);
+                int currentMonth = calendar.get(Calendar.MONTH);
+                int currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+                calendar.set(currentYear, currentMonth, currentDayOfMonth, 0, 0, 0);
+                //当天开始的时间戳
+                long startDayMills = calendar.getTimeInMillis();
+
+                calendar.set(currentYear, currentMonth, currentDayOfMonth, 23, 59, 59);
+                //当天结尾的时间戳
+                long endDayMills = calendar.getTimeInMillis();
+
+                for (int index = 0; index < models.size(); index++) {
+                    ViewInfo viewInfo = new ViewInfo();
+                    viewInfo.setModel(models.get(index));
+
+                    //开始和结束时间
+                    int startHour = 0;
+                    int endHour = 0;
+
+//                    Log.i("tag", "start time: " + startDayMills + " , " + models.get(index).getStartTime());
+                    if (startDayMills > models.get(index).getStartTime()) { //如果开始时间在今天之前
+                        startHour = 0;
+                    } else {
+                        calendar.setTimeInMillis(models.get(index).getStartTime());
+                        startHour = calendar.get(Calendar.HOUR_OF_DAY);
+                    }
+
+                    if (endDayMills < models.get(index).getEndTime()) { //如果结束时间在今天之后
+                        endHour = 23;
+                    } else {
+                        calendar.setTimeInMillis(models.get(index).getEndTime());
+                        endHour = calendar.get(Calendar.HOUR_OF_DAY);
+                    }
+
+                    viewInfo.setY(startHour);
+                    viewInfo.setHeight(endHour - startHour + 1);
+
+                    if (viewInfo.getHeight() == 0) {
+                        viewInfo.setHeight(1);
+                    }
+
+                    tmpViewInfos.add(viewInfo);
+                }
+            }
+
+            final List<ViewInfo> viewInfos = new ArrayList<>();
+            for (ViewInfo info0 : tmpViewInfos) {
+                if (tmpViewInfos.isEmpty()) {
+                    viewInfos.add(info0);
+                } else {
+                    for (ViewInfo info1 : viewInfos) {
+                        if (info0.getY() <= info1.getY() + info1.getHeight() && info0.getY() >= info1.getY()
+                                || (info1.getY() <= info0.getY() + info0.getHeight() && info1.getY() >= info1.getY())) {
+                            info0.setX(info0.getX() + 1);
+                        }
+                    }
+
+                    viewInfos.add(info0);
+                }
+            }
+
+            for (int index = 0; index < viewInfos.size(); index++) {
+                ViewInfo info0 = viewInfos.get(index);
+                for (int index0 = 0; index0 < viewInfos.size(); index0++) {
+                    ViewInfo info1 = viewInfos.get(index0);
+
+                    if (info0.getY() <= info1.getY() + info1.getHeight() && info0.getY() >= info1.getY()
+                            || (info1.getY() <= info0.getY() + info0.getHeight() && info1.getY() >= info1.getY())) {
+                        info0.setWidth(info0.getWidth() + 1);
+                    }
+                }
+            }
+
+            return viewInfos;
+        }
+
+
+         /**
+             * 待办视图有关信息
+             */
+            public static class ViewInfo {
+                /**
+                 * view起始x轴数值
+                 */
+                private int x;
+                /**
+                 * view起始y轴数值
+                 */
+                private int y;
+                /**
+                 * view宽度
+                 */
+                private int width;
+                /**
+                 * view高度
+                 */
+                private int height;
+                /**
+                 * 待办数据
+                 */
+                private TodoModel model;
+
+
+
+                private List<ViewInfo> resortData(List<TodoModel> models) {
+                            /**
+                             * 1、排序1：按照开始的时间排序；
+                             * 2、排序2：按照时间长短排序；
+                             * 3、计算每一个控件位置、尺寸
+                             * 4、添加控件时，先开始的先绘制，当目标时刻已有控件，右位移
+                             */
+
+                            //按开始时间顺序排序
+                            Collections.sort(models, new TodoModel.ComparatorValues());
+                            List<ViewInfo> viewInfos = caculateViewPosisitions(models);
+
+                            return viewInfos;
+                        }
