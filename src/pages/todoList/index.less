@@ -3,7 +3,7 @@
   z-index: 1;
   width: 800px;
   height: 1104px;
-  padding: 30px;
+  box-sizing: border-box;
   .day-hour-bar {
     z-index: 2;
     width: 100%;
@@ -43,7 +43,9 @@
     z-index: 3;
     display: flex;
     margin-left: 110px;
-    width: calc(100% - 110px);
+    width: calc(100% - 130px);
+    overflow: hidden;
+    height: 100%;
   }
 
   .day-content-item-sub {
@@ -54,11 +56,8 @@
 
   .day-content-show {
     background: #ecf2fd;
-    border: 1px solid red;
-    opacity: 0.5;
     border-left: 6px solid #4786f4;
     border-radius: 8px;
-    margin-left: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
     width: auto;
